@@ -2,12 +2,12 @@ package com.fernando.bookstore.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.fernando.bookstore.api.ControlllerUtil;
 import com.fernando.bookstore.data.model.Book;
 import com.fernando.bookstore.repository.BookRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +23,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
 
     @Autowired
-    private BookRepository bookRepository;
-	
+	private BookRepository bookRepository;
 	
 	@GetMapping(path = "")
 	public ResponseEntity<Page<Book>> getBooks(@RequestParam(defaultValue = "0", required = false) Integer page, 
-							@RequestParam(defaultValue = "10", required = false) Integer size) {
-		return ResponseEntity.ok(bookRepository.findAll(PageRequest.of(page, size)));
+							@RequestParam(defaultValue = "10", required = false) Integer size,
+							@RequestParam(defaultValue = "id,asc", required = false) String[] sort
+							) {
+		return ResponseEntity.ok(bookRepository.findAll(ControlllerUtil.buildPageableFromRequest(page, size, sort)));
 	}
 	
 
