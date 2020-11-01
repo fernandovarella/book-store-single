@@ -40,13 +40,15 @@ public class BookControllerTest {
     @BeforeAll
     public static void setupAll() {
         System.setProperty("spring.profiles.active", "dev");
-
     }
 
     @BeforeEach
     public void setup() {
         standaloneSetup(bookController, jsonApiExceptionHandler);
         ReflectionTestUtils.setField(jsonApiExceptionHandler, "activeProfile", "dev");
+
+        //
+        // when(bookService.getAll())
     }
 
     @Test

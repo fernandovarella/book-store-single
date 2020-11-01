@@ -3,7 +3,6 @@ package com.fernando.bookstore.controller;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 import com.fernando.bookstore.data.model.Book;
-import com.fernando.bookstore.repository.BookRepository;
 import com.fernando.bookstore.service.BookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
