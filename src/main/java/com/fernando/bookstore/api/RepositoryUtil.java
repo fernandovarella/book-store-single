@@ -13,7 +13,7 @@ import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ControlllerUtil {
+public class RepositoryUtil {
 
     private static final Map<String, Direction> directionMap = new HashMap<>();
     static {
@@ -21,7 +21,7 @@ public class ControlllerUtil {
         directionMap.put("desc", Direction.DESC);
     }
 
-    private ControlllerUtil () { }
+    private RepositoryUtil () { }
     
     /**
      * Build a {@link PageRequest} object for the given request parameters

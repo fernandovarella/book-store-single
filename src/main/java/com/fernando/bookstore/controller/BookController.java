@@ -2,14 +2,9 @@ package com.fernando.bookstore.controller;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
-import java.util.Optional;
-
-import javax.websocket.server.PathParam;
-
-import com.fernando.bookstore.api.ControlllerUtil;
 import com.fernando.bookstore.data.model.Book;
-import com.fernando.bookstore.exception.EntityNotFoundException;
 import com.fernando.bookstore.repository.BookRepository;
+import com.fernando.bookstore.service.BookService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,21 +20,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping(path = "api/v1/books", produces = APPLICATION_JSON_VALUE)
+@RequestMapping(path = "v1/books", produces = APPLICATION_JSON_VALUE)
 public class BookController {
 
-    @Autowired
-	private BookRepository bookRepository;
+	@Autowired
+	private BookService bookService;
 	
 
 	@GetMapping(path = "/{bookId}")
-	public ResponseEntity<Book> getBooks(@PathVariable(value = "bookId") String bookId) {
-		Optional<Book> book = bookRepository.findById(bookId);
-		if (book.isPresent()) {
-			return ResponseEntity.ok(book.get());
-		} else {
-			throw new EntityNotFoundException();
-		}
+	public ResponseEntity<Book> getBook(@PathVariable(value = "bookId") String bookId) {
+		return ResponseEntity.ok(bookService.get(bookId));
 	}
 
 	@GetMapping(path = "")
@@ -47,18 +37,14 @@ public class BookController {
 							@RequestParam(defaultValue = "10", required = false) Integer size,
 							@RequestParam(defaultValue = "id,asc", required = false) String[] sort
 							) {
-		return ResponseEntity.ok(bookRepository.findAll(ControlllerUtil.buildPageableFromRequest(page, size, sort)));
+		// return ResponseEntity.ok(bookRepository.findAll(ControlllerUtil.buildPageableFromRequest(page, size, sort)));
+		return ResponseEntity.ok(bookService.getAll(page, size, sort));
 	}
 	
 
     @PostMapping(path = "")
 	public ResponseEntity<Book> create(@RequestBody Book book) {
-		System.out.println("create owner " + book);
-
-		System.out.println(book);
-		// Book resp = bookRepository.save(book);
-		// if (1==1) throw new RuntimeException("Erro de teste no controller");
-		return ResponseEntity.ok(new Book());
+		return ResponseEntity.ok(bookService.create(book));
 	}
 	
 
