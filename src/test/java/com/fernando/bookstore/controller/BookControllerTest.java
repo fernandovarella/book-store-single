@@ -2,7 +2,11 @@ package com.fernando.bookstore.controller;
 
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.standaloneSetup;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import java.util.Arrays;
+import java.util.List;
 
 import com.fernando.bookstore.api.JsonApiExceptionHandler;
 import com.fernando.bookstore.data.model.Book;
@@ -16,6 +20,8 @@ import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
@@ -37,9 +43,20 @@ public class BookControllerTest {
     @InjectMocks
     private JsonApiExceptionHandler jsonApiExceptionHandler;
 
+
+    static Page<Book> findAllResult;
+
     @BeforeAll
     public static void setupAll() {
         System.setProperty("spring.profiles.active", "dev");
+
+
+        findAllResult = new PageImpl<Book>(Arrays.asList(
+                    Book.builder().id("book1").title("Book One").authors(Arrays.asList("Author One")).build(),
+                    Book.builder().id("book2").title("Book Two").authors(Arrays.asList("Author One")).build(),
+                    Book.builder().id("book3").title("Book Three").authors(Arrays.asList("Author Two")).build()
+                ));
+
     }
 
     @BeforeEach
@@ -48,7 +65,7 @@ public class BookControllerTest {
         ReflectionTestUtils.setField(jsonApiExceptionHandler, "activeProfile", "dev");
 
         //
-        // when(bookService.getAll())
+        when(bookService.getAll()).thenReturn(findAllResult);
     }
 
     @Test
@@ -82,5 +99,17 @@ public class BookControllerTest {
             .statusCode(HttpStatus.NOT_FOUND.value());
             
     }
+
+    //TODO: incluir mais testes
+
+    // @Test
+    // public void should_return3Books_when_getAll() {
+    //     given().accept(ContentType.JSON)
+    //     .when().get("v1/books")
+    //     .then()
+    //         .statusCode(HttpStatus.OK.value())
+    //         .expect(jsonPath) <<<<<<<< continuar aqui
+            
+    // }
 
 }
